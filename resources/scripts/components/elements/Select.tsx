@@ -6,7 +6,7 @@ interface Props {
 }
 
 const Select = styled.select<Props>`
-    ${tw`shadow-none block p-3 pr-8 rounded border w-full text-sm transition-colors duration-150 ease-linear`};
+    ${tw`shadow-none block p-3 pr-8 rounded-lg border w-full text-sm transition-colors duration-150 ease-linear`};
 
     &,
     &:hover:not(:disabled),
@@ -28,12 +28,24 @@ const Select = styled.select<Props>`
     ${(props) =>
         !props.hideDropdownArrow &&
         css`
-            ${tw`bg-neutral-600 border-neutral-500 text-neutral-200`};
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='%23C3D1DF' d='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z'/%3e%3c/svg%3e ");
+            ${tw`text-neutral-100`};
+            background-color: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.1);
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='%23A686FF' d='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z'/%3e%3c/svg%3e ");
 
-            &:hover:not(:disabled),
+            &:hover:not(:disabled) {
+                border-color: rgba(166, 134, 255, 0.4);
+            }
+
             &:focus {
-                ${tw`border-neutral-400`};
+                ${tw`ring-2 ring-primary-500 ring-opacity-30`};
+                background-color: rgba(139, 98, 255, 0.07);
+                border-color: rgba(166, 134, 255, 0.85);
+            }
+
+            & option {
+                background-color: #110d22;
+                color: #ebe8f8;
             }
         `};
 `;
