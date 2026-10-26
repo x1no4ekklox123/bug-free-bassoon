@@ -28,7 +28,7 @@ const theme = {
     green: '#9ECE58',
     yellow: '#FAED70',
     blue: '#396FE2',
-    magenta: '#BB80B3',
+    magenta: '#A686FF',
     cyan: '#2DDAFD',
     white: '#d0d0d0',
     brightBlack: 'rgba(255, 255, 255, 0.2)',
@@ -36,10 +36,10 @@ const theme = {
     brightGreen: '#C3E88D',
     brightYellow: '#FFCB6B',
     brightBlue: '#82AAFF',
-    brightMagenta: '#C792EA',
+    brightMagenta: '#D3A6FF',
     brightCyan: '#89DDFF',
     brightWhite: '#ffffff',
-    selection: '#FAF089',
+    selection: 'rgba(139, 98, 255, 0.45)',
 };
 
 const terminalProps: ITerminalOptions = {
@@ -53,7 +53,7 @@ const terminalProps: ITerminalOptions = {
 };
 
 export default () => {
-    const TERMINAL_PRELUDE = '\u001b[1m\u001b[33mcontainer@pterodactyl~ \u001b[0m';
+    const TERMINAL_PRELUDE = '\u001b[1m\u001b[35mcontainer@pterodactyl~ \u001b[0m';
     const ref = useRef<HTMLDivElement>(null);
     const terminal = useMemo(() => new Terminal({ ...terminalProps }), []);
     const fitAddon = new FitAddon();
