@@ -12,7 +12,9 @@ const ToggleContainer = styled.div`
         ${tw`hidden`};
 
         &:checked + label {
-            ${tw`bg-primary-500 border-primary-700 shadow-none`};
+            ${tw`border-primary-400/60 shadow-none`};
+            background-image: linear-gradient(135deg, #8b62ff, #7000ff);
+            box-shadow: 0 0 14px -2px rgba(139, 98, 255, 0.65);
         }
 
         &:checked + label:before {
@@ -21,11 +23,11 @@ const ToggleContainer = styled.div`
     }
 
     & > label {
-        ${tw`mb-0 block overflow-hidden cursor-pointer bg-neutral-400 border border-neutral-700 rounded-full h-6 shadow-inner`};
+        ${tw`mb-0 block overflow-hidden cursor-pointer bg-white/10 border border-white/15 rounded-full h-6 shadow-inner`};
         transition: all 75ms linear;
 
         &::before {
-            ${tw`absolute block bg-white border h-5 w-5 rounded-full`};
+            ${tw`absolute block bg-white h-5 w-5 rounded-full shadow`};
             top: 0.125rem;
             right: calc(50% + 0.125rem);
             //width: 1.25rem;

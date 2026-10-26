@@ -41,7 +41,10 @@ const FileUploadList = () => {
     return (
         <div className={'space-y-2 mt-6'}>
             {uploads.map(([name, file]) => (
-                <div key={name} className={'flex items-center space-x-3 bg-gray-700 p-3 rounded'}>
+                <div
+                    key={name}
+                    className={'flex items-center space-x-3 bg-gray-700 border border-white/10 p-3 rounded-lg'}
+                >
                     <Tooltip content={`${Math.floor((file.loaded / file.total) * 100)}%`} placement={'left'}>
                         <div className={'flex-shrink-0'}>
                             <Spinner progress={(file.loaded / file.total) * 100} className={'w-6 h-6'} />

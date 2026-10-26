@@ -1,7 +1,7 @@
 .button {
     @apply px-4 py-2 inline-flex items-center justify-center;
-    @apply rounded text-base font-semibold transition-all duration-100;
-    @apply focus:ring-[3px] focus:ring-offset-2 focus:ring-offset-gray-700 focus:ring-opacity-50;
+    @apply rounded-lg text-base font-semibold transition-all duration-150;
+    @apply focus:ring-[3px] focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-opacity-50;
 
     /* Sizing Controls */
     &.small {
@@ -14,6 +14,8 @@
 
     &.secondary {
         @apply text-gray-50 bg-transparent;
+        background-image: none;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
 
         &:disabled {
             background: transparent !important;
@@ -34,40 +36,97 @@
 }
 
 .primary {
-    @apply bg-blue-600 text-blue-50;
-    @apply hover:bg-blue-500 active:bg-blue-500 focus:ring-blue-400 focus:ring-opacity-75;
+    @apply text-white;
+    @apply focus:ring-blue-400 focus:ring-opacity-60;
+    background-image: linear-gradient(135deg, #8b62ff 0%, #7000ff 100%);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 6px 18px -6px rgba(139, 98, 255, 0.65);
+
+    &:hover:not(:disabled),
+    &:active:not(:disabled) {
+        filter: brightness(1.12);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18), 0 8px 24px -6px rgba(139, 98, 255, 0.85);
+    }
 
     &.secondary {
-        @apply hover:bg-blue-600 active:bg-blue-600;
+        @apply text-blue-100;
+        box-shadow: inset 0 0 0 1px rgba(139, 98, 255, 0.55);
+
+        &:hover:not(:disabled),
+        &:active:not(:disabled) {
+            @apply bg-blue-500/20 text-white;
+            filter: none;
+            box-shadow: inset 0 0 0 1px rgba(166, 134, 255, 0.85);
+        }
     }
 
     &:disabled {
-        @apply bg-blue-500/75 text-blue-200/75;
+        @apply text-blue-100/60;
+        opacity: 0.6;
+        filter: saturate(0.7);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
     }
 }
 
 .text {
-    @apply bg-gray-500 text-gray-50;
-    @apply hover:bg-gray-400 active:bg-gray-400 focus:ring-gray-300 focus:ring-opacity-50;
+    @apply text-gray-50 bg-white/5;
+    @apply focus:ring-gray-300 focus:ring-opacity-40;
+    background-image: none;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+
+    &:hover:not(:disabled),
+    &:active:not(:disabled) {
+        @apply bg-white/10;
+        filter: none;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+    }
 
     &.secondary {
-        @apply hover:bg-gray-500 active:bg-gray-500;
+        @apply bg-transparent;
+
+        &:hover:not(:disabled),
+        &:active:not(:disabled) {
+            @apply bg-white/10;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+        }
     }
 
     &:disabled {
-        @apply bg-gray-500/75 text-gray-200/75;
+        @apply bg-white/5 text-gray-200/50;
+        opacity: 0.7;
+        filter: none;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
     }
 }
 
 .danger {
-    @apply bg-red-600 text-gray-50;
-    @apply hover:bg-red-500 active:bg-red-500 focus:ring-red-400 focus:ring-opacity-75;
+    @apply text-white bg-red-600;
+    @apply focus:ring-red-400 focus:ring-opacity-60;
+    background-image: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 6px 18px -8px rgba(239, 68, 68, 0.6);
+
+    &:hover:not(:disabled),
+    &:active:not(:disabled) {
+        filter: brightness(1.12);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18), 0 8px 24px -8px rgba(239, 68, 68, 0.8);
+    }
 
     &.secondary {
-        @apply hover:bg-red-600 active:bg-red-600;
+        @apply bg-transparent text-red-200;
+        background-image: none;
+        box-shadow: inset 0 0 0 1px rgba(239, 68, 68, 0.55);
+
+        &:hover:not(:disabled),
+        &:active:not(:disabled) {
+            @apply bg-red-500/25 text-white;
+            filter: none;
+            box-shadow: inset 0 0 0 1px rgba(248, 113, 113, 0.9);
+        }
     }
 
     &:disabled {
-        @apply bg-red-600/75 text-red-50/75;
+        @apply text-red-50/60;
+        opacity: 0.55;
+        filter: saturate(0.7);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
     }
 }
