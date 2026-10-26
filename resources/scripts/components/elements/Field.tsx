@@ -5,7 +5,6 @@ import Label from '@/components/elements/Label';
 
 interface OwnProps {
     name: string;
-    light?: boolean;
     label?: string;
     description?: string;
     validate?: (value: any) => undefined | string | Promise<any>;
@@ -14,20 +13,17 @@ interface OwnProps {
 type Props = OwnProps & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'name'>;
 
 const Field = forwardRef<HTMLInputElement, Props>(
-    ({ id, name, light = false, label, description, validate, ...props }, ref) => (
+    ({ id, name, label, description, validate, ...props }, ref) => (
         <FormikField innerRef={ref} name={name} validate={validate}>
             {({ field, form: { errors, touched } }: FieldProps) => (
                 <div>
                     {label && (
-                        <Label htmlFor={id} isLight={light}>
-                            {label}
-                        </Label>
+                        <Label htmlFor={id}>{label}</Label>
                     )}
                     <Input
                         id={id}
                         {...field}
                         {...props}
-                        isLight={light}
                         hasError={!!(touched[field.name] && errors[field.name])}
                     />
                     {touched[field.name] && errors[field.name] ? (
