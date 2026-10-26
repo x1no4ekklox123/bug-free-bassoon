@@ -30,6 +30,15 @@ class SettingsServiceProvider extends ServiceProvider
         'pterodactyl:client_features:allocations:enabled',
         'pterodactyl:client_features:allocations:range_start',
         'pterodactyl:client_features:allocations:range_end',
+        'pterodactyl:database_backups:enabled',
+        'pterodactyl:database_backups:limit',
+        'pterodactyl:database_backups:s3:endpoint',
+        'pterodactyl:database_backups:s3:region',
+        'pterodactyl:database_backups:s3:bucket',
+        'pterodactyl:database_backups:s3:prefix',
+        'pterodactyl:database_backups:s3:key',
+        'pterodactyl:database_backups:s3:secret',
+        'pterodactyl:database_backups:s3:use_path_style_endpoint',
     ];
 
     /**
@@ -52,6 +61,7 @@ class SettingsServiceProvider extends ServiceProvider
      */
     protected static array $encrypted = [
         'mail:mailers:smtp:password',
+        'pterodactyl:database_backups:s3:secret',
     ];
 
     /**

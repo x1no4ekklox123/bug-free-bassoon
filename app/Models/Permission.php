@@ -26,6 +26,9 @@ class Permission extends Model
     public const ACTION_DATABASE_UPDATE = 'database.update';
     public const ACTION_DATABASE_DELETE = 'database.delete';
     public const ACTION_DATABASE_VIEW_PASSWORD = 'database.view_password';
+    public const ACTION_DATABASE_BACKUP = 'database.backup';
+    public const ACTION_DATABASE_BACKUP_RESTORE = 'database.backup_restore';
+    public const ACTION_DATABASE_BACKUP_DELETE = 'database.backup_delete';
 
     public const ACTION_SCHEDULE_READ = 'schedule.read';
     public const ACTION_SCHEDULE_CREATE = 'schedule.create';
@@ -179,6 +182,9 @@ class Permission extends Model
                 'update' => 'Allows a user to rotate the password on a database instance. If the user does not have the view_password permission they will not see the updated password.',
                 'delete' => 'Allows a user to remove a database instance from this server.',
                 'view_password' => 'Allows a user to view the password associated with a database instance for this server.',
+                'backup' => 'Allows a user to view, create and download S3 backups of the databases for this server.',
+                'backup_restore' => 'Allows a user to restore a database from a backup. This replaces all current data in that database.',
+                'backup_delete' => 'Allows a user to permanently delete database backups.',
             ],
         ],
 
