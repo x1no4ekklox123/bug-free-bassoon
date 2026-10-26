@@ -11,35 +11,46 @@ interface Props {
 }
 
 const ButtonStyle = styled.button<Omit<Props, 'isLoading'>>`
-    ${tw`relative inline-block rounded p-2 uppercase tracking-wide text-sm transition-all duration-150 border`};
+    ${tw`relative inline-block rounded-lg p-2 uppercase tracking-wide text-sm font-medium transition-all duration-150 border`};
 
     ${(props) =>
         ((!props.isSecondary && !props.color) || props.color === 'primary') &&
         css<Props>`
-            ${(props) => !props.isSecondary && tw`bg-primary-500 border-primary-600 border text-primary-50`};
+            ${(props) =>
+                !props.isSecondary &&
+                css`
+                    ${tw`border-white/10 text-white`};
+                    background-image: linear-gradient(135deg, #8b62ff 0%, #7000ff 100%);
+                    box-shadow: 0 6px 18px -6px rgba(139, 98, 255, 0.65);
+                `};
 
             &:hover:not(:disabled) {
-                ${tw`bg-primary-600 border-primary-700`};
+                ${(props) =>
+                    !props.isSecondary &&
+                    css`
+                        filter: brightness(1.12);
+                        box-shadow: 0 8px 24px -6px rgba(139, 98, 255, 0.85);
+                    `};
             }
         `};
 
     ${(props) =>
         props.color === 'grey' &&
         css`
-            ${tw`border-neutral-600 bg-neutral-500 text-neutral-50`};
+            ${tw`border-white/10 bg-white/5 text-neutral-100`};
 
             &:hover:not(:disabled) {
-                ${tw`bg-neutral-600 border-neutral-700`};
+                ${tw`border-white/20 bg-white/10`};
             }
         `};
 
     ${(props) =>
         props.color === 'green' &&
         css<Props>`
-            ${tw`border-green-600 bg-green-500 text-green-50`};
+            ${tw`border-green-500/40 bg-green-500/80 text-white`};
 
             &:hover:not(:disabled) {
-                ${tw`bg-green-600 border-green-700`};
+                ${tw`bg-green-500 border-green-400/60`};
             }
 
             ${(props) =>
@@ -54,10 +65,10 @@ const ButtonStyle = styled.button<Omit<Props, 'isLoading'>>`
     ${(props) =>
         props.color === 'red' &&
         css<Props>`
-            ${tw`border-red-600 bg-red-500 text-red-50`};
+            ${tw`border-red-500/40 bg-red-500/80 text-white`};
 
             &:hover:not(:disabled) {
-                ${tw`bg-red-600 border-red-700`};
+                ${tw`bg-red-500 border-red-400/60`};
             }
 
             ${(props) =>
@@ -77,19 +88,20 @@ const ButtonStyle = styled.button<Omit<Props, 'isLoading'>>`
     ${(props) =>
         props.isSecondary &&
         css<Props>`
-            ${tw`border-neutral-600 bg-transparent text-neutral-200`};
+            ${tw`border-white/15 bg-transparent text-neutral-200`};
 
             &:hover:not(:disabled) {
-                ${tw`border-neutral-500 text-neutral-100`};
-                ${(props) => props.color === 'red' && tw`bg-red-500 border-red-600 text-red-50`};
-                ${(props) => props.color === 'primary' && tw`bg-primary-500 border-primary-600 text-primary-50`};
-                ${(props) => props.color === 'green' && tw`bg-green-500 border-green-600 text-green-50`};
+                ${tw`border-white/30 text-white`};
+                ${(props) => props.color === 'red' && tw`bg-red-500 border-red-400 text-white`};
+                ${(props) => props.color === 'primary' && tw`bg-primary-500/90 border-primary-400 text-white`};
+                ${(props) => props.color === 'green' && tw`bg-green-500 border-green-400 text-white`};
             }
         `};
 
     &:disabled {
-        opacity: 0.55;
+        opacity: 0.5;
         cursor: default;
+        box-shadow: none;
     }
 `;
 
