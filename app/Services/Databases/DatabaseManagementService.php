@@ -142,6 +142,8 @@ class DatabaseManagementService
      */
     public function delete(Database $database): ?bool
     {
+        $this->deleteBackups($database);
+
         $this->dynamic->set('dynamic', $database->database_host_id);
 
         $this->repository->dropDatabase($database->database);
@@ -149,6 +151,23 @@ class DatabaseManagementService
         $this->repository->flush();
 
         return $database->delete();
+    }
+
+    /**
+     * Removes the S3 objects of all backups for the database. The rows themselves are
+     * removed by the foreign key once the database is deleted.
+     */
+    protected function deleteBackups(Database $database): void
+    {
+        $storage = Container::getInstance()->make(DatabaseBackupStorage::class);
+
+        foreach ($database->backups()->whereNotNull('object_key')->get() as $backup) {
+            try {
+                $storage->delete($backup->object_key);
+            } catch (\Exception $exception) {
+                Log::warning($exception);
+            }
+        }
     }
 
     /**
