@@ -13,13 +13,13 @@ interface Props {
 const styling = (type?: FlashMessageType): TwStyle | string => {
     switch (type) {
         case 'error':
-            return tw`bg-red-600 border-red-800`;
+            return tw`bg-red-500/15 border-red-500/40`;
         case 'info':
-            return tw`bg-primary-600 border-primary-800`;
+            return tw`bg-primary-500/15 border-primary-500/40`;
         case 'success':
-            return tw`bg-green-600 border-green-800`;
+            return tw`bg-green-500/15 border-green-500/40`;
         case 'warning':
-            return tw`bg-yellow-600 border-yellow-800`;
+            return tw`bg-yellow-500/15 border-yellow-500/40`;
         default:
             return '';
     }
@@ -41,7 +41,7 @@ const getBackground = (type?: FlashMessageType): TwStyle | string => {
 };
 
 const Container = styled.div<{ $type?: FlashMessageType }>`
-    ${tw`p-2 border items-center leading-normal rounded flex w-full text-sm text-white`};
+    ${tw`p-3 border items-center leading-normal rounded-xl flex w-full text-sm text-white`};
     ${(props) => styling(props.$type)};
 `;
 Container.displayName = 'MessageBox.Container';

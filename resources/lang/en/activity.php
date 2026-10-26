@@ -68,6 +68,12 @@ return [
             'create' => 'Created new database :name',
             'rotate-password' => 'Password rotated for database :name',
             'delete' => 'Deleted database :name',
+            'backup' => [
+                'create' => 'Started a backup ":backup" of database :name',
+                'download' => 'Downloaded the backup ":backup" of database :name',
+                'restore' => 'Restored database :name from the backup ":backup"',
+                'delete' => 'Deleted the backup ":backup" of database :name',
+            ],
         ],
         'file' => [
             'compress_one' => 'Compressed :directory:files.0',
