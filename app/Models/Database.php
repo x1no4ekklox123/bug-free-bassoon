@@ -3,6 +3,7 @@
 namespace Pterodactyl\Models;
 
 use Illuminate\Container\Container;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Pterodactyl\Contracts\Extensions\HashidsInterface;
@@ -110,5 +111,13 @@ class Database extends Model
     public function server(): BelongsTo
     {
         return $this->belongsTo(Server::class);
+    }
+
+    /**
+     * Gets the S3 backups that exist for this database.
+     */
+    public function backups(): HasMany
+    {
+        return $this->hasMany(DatabaseBackup::class);
     }
 }
