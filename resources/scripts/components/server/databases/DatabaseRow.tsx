@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDatabase, faEye, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faDatabase, faEye, faHistory, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import Modal from '@/components/elements/Modal';
 import { Form, Formik, FormikHelpers } from 'formik';
 import Field from '@/components/elements/Field';
@@ -19,6 +19,8 @@ import Label from '@/components/elements/Label';
 import Input from '@/components/elements/Input';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import CopyOnClick from '@/components/elements/CopyOnClick';
+import DatabaseBackupsModal from '@/components/server/databases/DatabaseBackupsModal';
+import { useStoreState } from 'easy-peasy';
 
 interface Props {
     database: ServerDatabase;
@@ -30,6 +32,8 @@ export default ({ database, className }: Props) => {
     const { addError, clearFlashes } = useFlash();
     const [visible, setVisible] = useState(false);
     const [connectionVisible, setConnectionVisible] = useState(false);
+    const [backupsVisible, setBackupsVisible] = useState(false);
+    const backupsEnabled = useStoreState((state) => state.settings.data?.databaseBackups || false);
 
     const appendDatabase = ServerContext.useStoreActions((actions) => actions.databases.appendDatabase);
     const removeDatabase = ServerContext.useStoreActions((actions) => actions.databases.removeDatabase);
@@ -139,6 +143,13 @@ export default ({ database, className }: Props) => {
                     </Button>
                 </div>
             </Modal>
+            {backupsEnabled && (
+                <DatabaseBackupsModal
+                    database={database}
+                    visible={backupsVisible}
+                    onDismissed={() => setBackupsVisible(false)}
+                />
+            )}
             <GreyRowBox $hoverable={false} className={className} css={tw`mb-2`}>
                 <div css={tw`hidden md:block`}>
                     <FontAwesomeIcon icon={faDatabase} fixedWidth />
@@ -168,6 +179,18 @@ export default ({ database, className }: Props) => {
                     <Button isSecondary css={tw`mr-2`} onClick={() => setConnectionVisible(true)}>
                         <FontAwesomeIcon icon={faEye} fixedWidth />
                     </Button>
+                    {backupsEnabled && (
+                        <Can action={'database.backup'}>
+                            <Button
+                                isSecondary
+                                css={tw`mr-2`}
+                                title={'Backups'}
+                                onClick={() => setBackupsVisible(true)}
+                            >
+                                <FontAwesomeIcon icon={faHistory} fixedWidth />
+                            </Button>
+                        </Can>
+                    )}
                     <Can action={'database.delete'}>
                         <Button color={'red'} isSecondary onClick={() => setVisible(true)}>
                             <FontAwesomeIcon icon={faTrashAlt} fixedWidth />
