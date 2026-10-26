@@ -78,6 +78,12 @@ Route::group([
             ->post('/', [Client\Servers\DatabaseController::class, 'store']);
         Route::post('/{database}/rotate-password', [Client\Servers\DatabaseController::class, 'rotatePassword']);
         Route::delete('/{database}', [Client\Servers\DatabaseController::class, 'delete']);
+
+        Route::get('/{database}/backups', [Client\Servers\DatabaseBackupController::class, 'index']);
+        Route::post('/{database}/backups', [Client\Servers\DatabaseBackupController::class, 'store']);
+        Route::get('/{database}/backups/{backup}/download', [Client\Servers\DatabaseBackupController::class, 'download']);
+        Route::post('/{database}/backups/{backup}/restore', [Client\Servers\DatabaseBackupController::class, 'restore']);
+        Route::delete('/{database}/backups/{backup}', [Client\Servers\DatabaseBackupController::class, 'delete']);
     });
 
     Route::group(['prefix' => '/files'], function () {

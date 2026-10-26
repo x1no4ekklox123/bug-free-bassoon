@@ -21,15 +21,30 @@ const RightNavigation = styled.div`
 
         &:active,
         &:hover {
-            ${tw`text-neutral-100 bg-black`};
+            ${tw`text-white`};
+            background-image: linear-gradient(to top, rgba(139, 98, 255, 0.16), transparent);
         }
 
         &:active,
         &:hover,
         &.active {
-            box-shadow: inset 0 -2px ${theme`colors.cyan.600`.toString()};
+            box-shadow: inset 0 -2px ${theme`colors.primary.500`.toString()};
+        }
+
+        &.active {
+            ${tw`text-white`};
+            background-image: linear-gradient(to top, rgba(139, 98, 255, 0.22), transparent);
         }
     }
+`;
+
+const BrandLink = styled(Link)`
+    ${tw`text-2xl font-header font-semibold px-4 no-underline transition-opacity duration-150 hover:opacity-80`};
+    background-image: linear-gradient(90deg, #ffffff 0%, #d3a6ff 60%, #8b62ff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
 `;
 
 export default () => {
@@ -46,18 +61,14 @@ export default () => {
     };
 
     return (
-        <div className={'w-full bg-neutral-900 shadow-md overflow-x-auto'}>
+        <div
+            className={'w-full overflow-x-auto border-b border-white/5 bg-neutral-900/60 backdrop-blur-xl'}
+            style={{ boxShadow: '0 10px 30px -18px rgba(112, 0, 255, 0.45)' }}
+        >
             <SpinnerOverlay visible={isLoggingOut} />
             <div className={'mx-auto w-full flex items-center h-[3.5rem] max-w-[1200px]'}>
                 <div id={'logo'} className={'flex-1'}>
-                    <Link
-                        to={'/'}
-                        className={
-                            'text-2xl font-header font-medium px-4 no-underline text-neutral-200 hover:text-neutral-100 transition-colors duration-150'
-                        }
-                    >
-                        {name}
-                    </Link>
+                    <BrandLink to={'/'}>{name}</BrandLink>
                 </div>
                 <RightNavigation className={'flex h-full items-center justify-center'}>
                     <SearchContainer />

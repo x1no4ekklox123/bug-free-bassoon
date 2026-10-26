@@ -5,6 +5,7 @@ import styled, { css } from 'styled-components/macro';
 import { breakpoint } from '@/theme';
 import Fade from '@/components/elements/Fade';
 import { createPortal } from 'react-dom';
+import { glassSurface } from '@/assets/css/glass';
 
 export interface RequiredModalProps {
     visible: boolean;
@@ -22,7 +23,9 @@ export interface ModalProps extends RequiredModalProps {
 
 export const ModalMask = styled.div`
     ${tw`fixed z-50 overflow-auto flex w-full inset-0`};
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(5, 3, 9, 0.72);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
 `;
 
 const ModalContainer = styled.div<{ alignTop?: boolean }>`
@@ -122,15 +125,19 @@ const Modal: React.FC<ModalProps> = ({
                     {showSpinnerOverlay && (
                         <Fade timeout={150} appear in>
                             <div
-                                css={tw`absolute w-full h-full rounded flex items-center justify-center`}
-                                style={{ background: 'hsla(211, 10%, 53%, 0.35)', zIndex: 9999 }}
+                                css={tw`absolute w-full h-full rounded-2xl flex items-center justify-center`}
+                                style={{ background: 'rgba(5, 3, 9, 0.6)', zIndex: 9999 }}
                             >
                                 <Spinner />
                             </div>
                         </Fade>
                     )}
                     <div
-                        css={tw`bg-neutral-800 p-3 sm:p-4 md:p-6 rounded shadow-md overflow-y-scroll transition-all duration-150`}
+                        css={[
+                            glassSurface,
+                            tw`p-3 sm:p-4 md:p-6 rounded-2xl overflow-y-scroll transition-all duration-150`,
+                            { backgroundColor: 'rgba(17, 13, 34, 0.94)' },
+                        ]}
                     >
                         {children}
                     </div>
