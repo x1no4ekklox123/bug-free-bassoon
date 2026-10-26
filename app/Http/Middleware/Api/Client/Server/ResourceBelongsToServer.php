@@ -11,6 +11,7 @@ use Pterodactyl\Models\Subuser;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\Schedule;
 use Pterodactyl\Models\Allocation;
+use Pterodactyl\Models\DatabaseBackup;
 use Illuminate\Database\Eloquent\Model;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -52,6 +53,14 @@ class ResourceBelongsToServer
                 case Schedule::class:
                 case Subuser::class:
                     if ($model->server_id !== $server->id) {
+                        throw $exception;
+                    }
+                    break;
+                    // Database backups belong to a database, which must be the database in the
+                    // route and must itself belong to this server.
+                case DatabaseBackup::class:
+                    $database = $request->route()->parameter('database');
+                    if (!$database instanceof Database || $model->database_id !== $database->id || $database->server_id !== $server->id) {
                         throw $exception;
                     }
                     break;
