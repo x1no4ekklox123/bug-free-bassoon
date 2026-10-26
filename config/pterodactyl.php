@@ -193,4 +193,37 @@ return [
     'features' => [
         'new_server_identifiers' => (bool) env('PTERODACTYL_USE_SERVER_IDENTIFIERS', false),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Database Backups
+    |--------------------------------------------------------------------------
+    |
+    | Server databases can be dumped and stored in any S3 compatible storage.
+    | These values are normally managed from Admin -> Settings -> Database Backups,
+    | the environment variables below are only used as defaults.
+    */
+
+    'database_backups' => [
+        'enabled' => env('DATABASE_BACKUPS_ENABLED', false),
+
+        // Maximum number of backups that can exist for a single database, 0 = unlimited.
+        'limit' => (int) env('DATABASE_BACKUPS_LIMIT', 5),
+
+        // Maximum time in seconds a single dump or restore job may run.
+        'timeout' => (int) env('DATABASE_BACKUPS_TIMEOUT', 3600),
+
+        // Lifetime in minutes of generated download links.
+        'download_link_lifetime' => (int) env('DATABASE_BACKUPS_LINK_LIFETIME', 15),
+
+        's3' => [
+            'endpoint' => env('DATABASE_BACKUPS_S3_ENDPOINT'),
+            'region' => env('DATABASE_BACKUPS_S3_REGION', 'us-east-1'),
+            'bucket' => env('DATABASE_BACKUPS_S3_BUCKET'),
+            'prefix' => env('DATABASE_BACKUPS_S3_PREFIX', 'database-backups'),
+            'key' => env('DATABASE_BACKUPS_S3_KEY'),
+            'secret' => env('DATABASE_BACKUPS_S3_SECRET'),
+            'use_path_style_endpoint' => env('DATABASE_BACKUPS_S3_PATH_STYLE', false),
+        ],
+    ],
 ];
