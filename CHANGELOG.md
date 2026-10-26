@@ -3,6 +3,15 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.15.2-nebula.1
+Based on Pterodactyl Panel v1.15.2.
+
+### Added
+* Purple "Nebula" theme for the client area and the admin panel (dark glass design, Onest font with Cyrillic support).
+* S3 backups for server databases: users can create, download, restore and delete backups from the Databases tab.
+* Admin -> Settings -> Database Backups to configure the S3 storage (AWS S3, MinIO, Cloudflare R2 and other S3 compatible providers) and the per-database backup limit.
+* New subuser permissions: `database.backup`, `database.backup_restore` and `database.backup_delete`.
+
 ## v1.12.3
 ### Fixed
 * Adds a rate limit when changing email addresses on an account to prevent account enumeration.
