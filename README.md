@@ -87,6 +87,22 @@ php artisan migrate:rollback --path=database/migrations/2026_10_26_120000_create
 - Панель должна иметь сетевой доступ к хостам баз данных (как и для создания баз).
 - Пользователь хоста БД в админке должен иметь права из официальной документации (`GRANT ALL PRIVILEGES ON *.* ... WITH GRANT OPTION`) — они нужны для восстановления view/триггеров/процедур с DEFINER пользователя базы.
 - Таймаут одной операции — `DATABASE_BACKUPS_TIMEOUT` в `.env` (по умолчанию 3600 секунд).
+- Скачивание идёт по подписанной ссылке прямо на endpoint хранилища, поэтому endpoint должен быть доступен из браузеров пользователей, а не только с сервера панели.
+- Пока идёт дамп или восстановление, воркер очереди занят. Если вы запускаете больше одного `pteroq` и дампы бывают дольше 90 секунд, поднимите `REDIS_QUEUE_RETRY_AFTER` (или `DB_QUEUE_RETRY_AFTER` для очереди в базе) выше `DATABASE_BACKUPS_TIMEOUT`, иначе задача будет выдана второму воркеру.
+
+Если при `p:environment:setup` вы отказались от редактора настроек в UI (`APP_ENVIRONMENT_ONLY=true`), значения из админки не применяются. Включите его (`APP_ENVIRONMENT_ONLY=false`) или задайте настройки в `.env`:
+
+```dotenv
+DATABASE_BACKUPS_ENABLED=true
+DATABASE_BACKUPS_LIMIT=5
+DATABASE_BACKUPS_S3_ENDPOINT=https://s3.example.com
+DATABASE_BACKUPS_S3_REGION=us-east-1
+DATABASE_BACKUPS_S3_BUCKET=pterodactyl-db
+DATABASE_BACKUPS_S3_PREFIX=database-backups
+DATABASE_BACKUPS_S3_KEY=
+DATABASE_BACKUPS_S3_SECRET=
+DATABASE_BACKUPS_S3_PATH_STYLE=false
+```
 
 Объекты хранятся как `prefix/<uuid сервера>/<имя базы>/<uuid бэкапа>.sql.gz`. Файл — обычный SQL-дамп, его можно импортировать и вручную: `zcat backup.sql.gz | mysql имя_базы`.
 
