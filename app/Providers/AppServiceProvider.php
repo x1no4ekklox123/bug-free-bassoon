@@ -41,6 +41,7 @@ class AppServiceProvider extends ServiceProvider
             'api_key' => Models\ApiKey::class,
             'backup' => Models\Backup::class,
             'database' => Models\Database::class,
+            'database_backup' => Models\DatabaseBackup::class,
             'egg' => Models\Egg::class,
             'egg_variable' => Models\EggVariable::class,
             'schedule' => Models\Schedule::class,
