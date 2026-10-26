@@ -45,7 +45,7 @@ const options: ChartOptions<'line'> = {
             type: 'linear',
             grid: {
                 display: true,
-                color: theme('colors.gray.700'),
+                color: 'rgba(255, 255, 255, 0.06)',
                 drawBorder: false,
             },
             ticks: {
@@ -91,8 +91,8 @@ function getEmptyData(label: string, sets = 1, callback?: ChartDatasetCallback |
                         fill: true,
                         label,
                         data: Array(20).fill(-5),
-                        borderColor: theme('colors.cyan.400'),
-                        backgroundColor: hexToRgba(theme('colors.cyan.700'), 0.5),
+                        borderColor: theme('colors.primary.400'),
+                        backgroundColor: hexToRgba(theme('colors.primary.600'), 0.35),
                     },
                     index
                 )

@@ -109,12 +109,12 @@ export default () => {
 
     return error ? (
         <CSSTransition timeout={150} in appear classNames={'fade'}>
-            <div css={tw`bg-red-500 py-2`}>
+            <div css={tw`bg-red-500/15 border-b border-red-500/40 py-2`}>
                 <ContentContainer css={tw`flex items-center justify-center`}>
                     {error === 'connecting' ? (
                         <>
                             <Spinner size={'small'} />
-                            <p css={tw`ml-2 text-sm text-red-100`}>
+                            <p css={tw`ml-2 text-sm text-red-200`}>
                                 We&apos;re having some trouble connecting to your server, please wait...
                             </p>
                         </>
