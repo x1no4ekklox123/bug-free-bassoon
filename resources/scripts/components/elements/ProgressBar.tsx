@@ -6,9 +6,10 @@ import { CSSTransition } from 'react-transition-group';
 import tw from 'twin.macro';
 
 const BarFill = styled.div`
-    ${tw`h-full bg-cyan-400`};
+    ${tw`h-full`};
+    background-image: linear-gradient(90deg, #7000ff, #8b62ff 55%, #f260ff);
     transition: 250ms ease-in-out;
-    box-shadow: 0 -2px 10px 2px hsl(178, 78%, 57%);
+    box-shadow: 0 -2px 10px 2px rgba(139, 98, 255, 0.75);
 `;
 
 type Timer = ReturnType<typeof setTimeout>;
