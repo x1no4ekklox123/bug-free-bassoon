@@ -9,11 +9,11 @@ interface Props {
 }
 
 export const DropdownButtonRow = styled.button<{ danger?: boolean }>`
-    ${tw`p-2 flex items-center rounded w-full text-neutral-500`};
+    ${tw`p-2 flex items-center rounded-lg w-full text-neutral-300`};
     transition: 150ms all ease;
 
     &:hover {
-        ${(props) => (props.danger ? tw`text-red-700 bg-red-100` : tw`text-neutral-700 bg-neutral-100`)};
+        ${(props) => (props.danger ? tw`text-red-100 bg-red-500/25` : tw`text-white bg-primary-500/25`)};
     }
 `;
 
@@ -93,8 +93,8 @@ class DropdownMenu extends React.PureComponent<Props, State> {
                             e.stopPropagation();
                             this.setState({ visible: false });
                         }}
-                        style={{ width: '12rem' }}
-                        css={tw`absolute bg-white p-2 rounded border border-neutral-700 shadow-lg text-neutral-500 z-50`}
+                        style={{ width: '12rem', backgroundColor: 'rgba(17, 13, 34, 0.96)' }}
+                        css={tw`absolute p-2 rounded-xl border border-white/10 shadow-lg text-neutral-300 z-50 backdrop-blur-xl`}
                     >
                         {this.props.children}
                     </div>

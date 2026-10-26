@@ -37,8 +37,9 @@ const SpinnerComponent = styled.div<Props>`
               `
             : null};
 
-    border-color: ${(props) => (!props.isBlue ? 'rgba(255, 255, 255, 0.2)' : 'hsla(212, 92%, 43%, 0.2)')};
-    border-top-color: ${(props) => (!props.isBlue ? 'rgb(255, 255, 255)' : 'hsl(212, 92%, 43%)')};
+    border-color: ${(props) => (!props.isBlue ? 'rgba(255, 255, 255, 0.2)' : 'rgba(139, 98, 255, 0.2)')};
+    border-top-color: ${(props) => (!props.isBlue ? 'rgb(255, 255, 255)' : 'rgb(166, 134, 255)')};
+    filter: drop-shadow(0 0 6px rgba(139, 98, 255, 0.5));
 `;
 
 const Spinner: Spinner = ({ centered, ...props }) =>
