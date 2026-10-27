@@ -11,6 +11,8 @@ import style from './style.module.css';
 import Avatar from '@/components/Avatar';
 import useLocationHash from '@/plugins/useLocationHash';
 import { getObjectKeys, isObject } from '@/lib/objects';
+import { useTranslation } from 'react-i18next';
+import { dateLocale } from '@/i18n';
 
 interface Props {
     activity: ActivityLog;
@@ -39,6 +41,7 @@ function wrapProperties(value: unknown): any {
 }
 
 export default ({ activity, children }: Props) => {
+    const { t } = useTranslation('activitylog');
     const { pathTo } = useLocationHash();
     const actor = activity.relationships.actor;
     const properties = wrapProperties(activity.properties);
@@ -53,8 +56,8 @@ export default ({ activity, children }: Props) => {
             <div className={'col-span-10 sm:col-span-9 flex'}>
                 <div className={'flex-1 px-4 sm:px-0'}>
                     <div className={'flex items-center text-gray-50'}>
-                        <Tooltip placement={'top'} content={actor?.email || 'System User'}>
-                            <span>{actor?.username || 'System'}</span>
+                        <Tooltip placement={'top'} content={actor?.email || t('system_user')}>
+                            <span>{actor?.username || t('system')}</span>
                         </Tooltip>
                         <span className={'text-gray-400'}>&nbsp;&mdash;&nbsp;</span>
                         <Link
@@ -65,12 +68,12 @@ export default ({ activity, children }: Props) => {
                         </Link>
                         <div className={classNames(style.icons, 'group-hover:text-gray-300')}>
                             {activity.isApi && (
-                                <Tooltip placement={'top'} content={'Using API Key'}>
+                                <Tooltip placement={'top'} content={t('using_api_key')}>
                                     <TerminalIcon />
                                 </Tooltip>
                             )}
                             {activity.event.startsWith('server:sftp.') && (
-                                <Tooltip placement={'top'} content={'Using SFTP'}>
+                                <Tooltip placement={'top'} content={t('using_sftp')}>
                                     <FolderOpenIcon />
                                 </Tooltip>
                             )}
@@ -87,8 +90,16 @@ export default ({ activity, children }: Props) => {
                                 <span className={'text-gray-400'}>&nbsp;|&nbsp;</span>
                             </span>
                         )}
-                        <Tooltip placement={'right'} content={format(activity.timestamp, 'MMM do, yyyy H:mm:ss')}>
-                            <span>{formatDistanceToNowStrict(activity.timestamp, { addSuffix: true })}</span>
+                        <Tooltip
+                            placement={'right'}
+                            content={format(activity.timestamp, `${t('date_format')} H:mm:ss`, { locale: dateLocale() })}
+                        >
+                            <span>
+                                {formatDistanceToNowStrict(activity.timestamp, {
+                                    addSuffix: true,
+                                    locale: dateLocale(),
+                                })}
+                            </span>
                         </Tooltip>
                     </div>
                 </div>
