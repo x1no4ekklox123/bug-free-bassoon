@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import getFileContents from '@/api/server/files/getFileContents';
 import { httpErrorToHuman } from '@/api/http';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
@@ -24,6 +25,7 @@ import CodemirrorEditor from '@/components/elements/CodemirrorEditor';
 const getNewFileDraftKey = (uuid: string, directory: string) => `pterodactyl:new-file:${uuid}:${directory}`;
 
 export default () => {
+    const { t } = useTranslation('files');
     const [error, setError] = useState('');
     const { action } = useParams<{ action: 'new' | string }>();
     const [loading, setLoading] = useState(action === 'edit');
@@ -130,11 +132,11 @@ export default () => {
             {hash.replace(/^#/, '').endsWith('.pteroignore') && (
                 <div css={tw`mb-4 p-4 border-l-4 bg-neutral-900 rounded border-cyan-400`}>
                     <p css={tw`text-neutral-300 text-sm`}>
-                        You&apos;re editing a <code css={tw`font-mono bg-black rounded py-px px-1`}>.pteroignore</code>{' '}
-                        file. Any files or directories listed in here will be excluded from backups. Wildcards are
-                        supported by using an asterisk (<code css={tw`font-mono bg-black rounded py-px px-1`}>*</code>).
-                        You can negate a prior rule by prepending an exclamation point (
-                        <code css={tw`font-mono bg-black rounded py-px px-1`}>!</code>).
+                        <Trans
+                            t={t}
+                            i18nKey={'editor.pteroignore'}
+                            components={{ code: <code css={tw`font-mono bg-black rounded py-px px-1`} /> }}
+                        />
                     </p>
                 </div>
             )}
@@ -168,10 +170,10 @@ export default () => {
             </div>
             <div css={tw`flex justify-end mt-4`}>
                 <div css={tw`flex-1 sm:flex-none rounded bg-neutral-900 mr-4`}>
-                    <Select value={mode} onChange={(e) => setMode(e.currentTarget.value)}>
+                    <Select aria-label={t('editor.mode')} value={mode} onChange={(e) => setMode(e.currentTarget.value)}>
                         {modes.map((mode) => (
                             <option key={`${mode.name}_${mode.mime}`} value={mode.mime}>
-                                {mode.name}
+                                {mode.mime === 'text/plain' ? t('editor.plain_text') : mode.name}
                             </option>
                         ))}
                     </Select>
@@ -179,13 +181,13 @@ export default () => {
                 {action === 'edit' ? (
                     <Can action={'file.update'}>
                         <Button css={tw`flex-1 sm:flex-none`} onClick={() => save()}>
-                            Save Content
+                            {t('editor.save')}
                         </Button>
                     </Can>
                 ) : (
                     <Can action={'file.create'}>
                         <Button css={tw`flex-1 sm:flex-none`} onClick={() => setModalVisible(true)}>
-                            Create File
+                            {t('editor.create')}
                         </Button>
                     </Can>
                 )}
