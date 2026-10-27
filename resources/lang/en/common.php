@@ -39,4 +39,23 @@ return [
     'update' => 'Update',
     'username' => 'Username',
     'yes' => 'Yes',
+
+    'clipboard' => [
+        'copied_value' => 'Copied ":value" to clipboard.',
+        'copied_text' => 'Copied text to clipboard.',
+    ],
+    'errors' => [
+        'something_went_wrong' => 'Something went wrong',
+        'oops' => 'Oops!',
+        'not_found' => 'The requested resource was not found.',
+        'access_denied' => 'Access Denied',
+        'no_permission' => 'You do not have permission to access this page.',
+        'render' => 'An error was encountered by the application while rendering this view. Try refreshing the page.',
+        'network' => 'Network Error',
+        'request_failed' => 'Request failed with status code :status',
+        'timeout' => 'timeout of :duration exceeded',
+    ],
+    'pagination' => [
+        'showing' => 'Showing <strong>:start</strong> to <strong>:end</strong> of <strong>:total</strong> results.',
+    ],
 ];
