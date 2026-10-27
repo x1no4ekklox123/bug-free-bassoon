@@ -1,4 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ServerContext } from '@/state/server';
 import { Form, Formik, FormikHelpers } from 'formik';
 import Field from '@/components/elements/Field';
@@ -12,16 +13,16 @@ import { useFlashKey } from '@/plugins/useFlash';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import { WithClassname } from '@/components/types';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import { Dialog, DialogWrapperContext } from '@/components/elements/dialog';
+import { Dialog, DialogProps } from '@/components/elements/dialog';
 import Code from '@/components/elements/Code';
-import asDialog from '@/hoc/asDialog';
+import i18n from '@/i18n';
 
 interface Values {
     directoryName: string;
 }
 
 const schema = object().shape({
-    directoryName: string().required('A valid directory name must be provided.'),
+    directoryName: string().required(() => i18n.t('files:directory.name_required')),
 });
 
 const displayNameForDirectory = (name: string): string =>
@@ -48,14 +49,12 @@ const generateDirectoryData = (name: string): FileObject => {
     };
 };
 
-const NewDirectoryDialog = asDialog({
-    title: 'Create Directory',
-})(() => {
+const NewDirectoryForm = ({ close }: { close: () => void }) => {
+    const { t } = useTranslation('files');
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const directory = ServerContext.useStoreState((state) => state.files.directory);
 
     const { mutate } = useFileManagerSwr();
-    const { close } = useContext(DialogWrapperContext);
     const { clearAndAddHttpError } = useFlashKey('files:directory-modal');
 
     useEffect(() => {
@@ -80,9 +79,9 @@ const NewDirectoryDialog = asDialog({
                 <>
                     <FlashMessageRender key={'files:directory-modal'} />
                     <Form css={tw`m-0`}>
-                        <Field autoFocus id={'directoryName'} name={'directoryName'} label={'Name'} />
+                        <Field autoFocus id={'directoryName'} name={'directoryName'} label={t('directory.name')} />
                         <p css={tw`mt-2 text-sm md:text-base break-all`}>
-                            <span css={tw`text-neutral-200`}>This directory will be created as&nbsp;</span>
+                            <span css={tw`text-neutral-200`}>{t('directory.created_as')}&nbsp;</span>
                             <Code>
                                 /home/container/
                                 <span css={tw`text-cyan-200`}>
@@ -93,26 +92,38 @@ const NewDirectoryDialog = asDialog({
                     </Form>
                     <Dialog.Footer>
                         <Button.Text className={'w-full sm:w-auto'} onClick={close}>
-                            Cancel
+                            {t('common:cancel')}
                         </Button.Text>
                         <Button className={'w-full sm:w-auto'} onClick={submitForm}>
-                            Create
+                            {t('common:create')}
                         </Button>
                     </Dialog.Footer>
                 </>
             )}
         </Formik>
     );
-});
+};
+
+// Not built with asDialog: its title is fixed when the module loads, before the language is known.
+const NewDirectoryDialog = ({ open, onClose }: DialogProps) => {
+    const { t } = useTranslation('files');
+
+    return (
+        <Dialog open={open} onClose={onClose} title={t('directory.create')}>
+            <NewDirectoryForm close={onClose} />
+        </Dialog>
+    );
+};
 
 export default ({ className }: WithClassname) => {
+    const { t } = useTranslation('files');
     const [open, setOpen] = useState(false);
 
     return (
         <>
             <NewDirectoryDialog open={open} onClose={setOpen.bind(this, false)} />
             <Button.Text onClick={setOpen.bind(this, true)} className={className}>
-                Create Directory
+                {t('directory.create')}
             </Button.Text>
         </>
     );

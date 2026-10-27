@@ -9,6 +9,7 @@ import Input, { Textarea } from '@/components/elements/Input';
 import styled from 'styled-components/macro';
 import { useFlashKey } from '@/plugins/useFlash';
 import { createSSHKey, useSSHKeys } from '@/api/account/ssh-keys';
+import { useTranslation } from 'react-i18next';
 
 interface Values {
     name: string;
@@ -20,6 +21,7 @@ const CustomTextarea = styled(Textarea)`
 `;
 
 export default () => {
+    const { t } = useTranslation('account');
     const { clearAndAddHttpError } = useFlashKey('account');
     const { mutate } = useSSHKeys();
 
@@ -41,25 +43,25 @@ export default () => {
                 onSubmit={submit}
                 initialValues={{ name: '', publicKey: '' }}
                 validationSchema={object().shape({
-                    name: string().required(),
-                    publicKey: string().required(),
+                    name: string().required(t('ssh.validation.name_required')),
+                    publicKey: string().required(t('ssh.validation.public_key_required')),
                 })}
             >
                 {({ isSubmitting }) => (
                     <Form>
                         <SpinnerOverlay visible={isSubmitting} />
-                        <FormikFieldWrapper label={'SSH Key Name'} name={'name'} css={tw`mb-6`}>
+                        <FormikFieldWrapper label={t('ssh.name')} name={'name'} css={tw`mb-6`}>
                             <Field name={'name'} as={Input} />
                         </FormikFieldWrapper>
                         <FormikFieldWrapper
-                            label={'Public Key'}
+                            label={t('ssh.public_key')}
                             name={'publicKey'}
-                            description={'Enter your public SSH key.'}
+                            description={t('ssh.public_key_help')}
                         >
                             <Field name={'publicKey'} as={CustomTextarea} />
                         </FormikFieldWrapper>
                         <div css={tw`flex justify-end mt-6`}>
-                            <Button>Save</Button>
+                            <Button>{t('common:save')}</Button>
                         </div>
                     </Form>
                 )}
