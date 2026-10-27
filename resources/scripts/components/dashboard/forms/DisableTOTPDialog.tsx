@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import asDialog from '@/hoc/asDialog';
 import { Dialog, DialogWrapperContext } from '@/components/elements/dialog';
 import { Button } from '@/components/elements/button/index';
@@ -8,13 +8,24 @@ import disableAccountTwoFactor from '@/api/account/disableAccountTwoFactor';
 import { useFlashKey } from '@/plugins/useFlash';
 import { useStoreActions } from '@/state/hooks';
 import FlashMessageRender from '@/components/FlashMessageRender';
+import { useTranslation } from 'react-i18next';
 
 const DisableTOTPDialog = () => {
+    const { t } = useTranslation('account');
     const [submitting, setSubmitting] = useState(false);
     const [password, setPassword] = useState('');
     const { clearAndAddHttpError } = useFlashKey('account:two-step');
     const { close, setProps } = useContext(DialogWrapperContext);
     const updateUserData = useStoreActions((actions) => actions.user.updateUserData);
+
+    // asDialog only accepts static props, so the translated title is applied before the first paint.
+    useLayoutEffect(() => {
+        setProps((state) => ({
+            ...state,
+            title: t('two_factor.disable_dialog.title'),
+            description: t('two_factor.disable_dialog.description'),
+        }));
+    }, [t]);
 
     useEffect(() => {
         setProps((state) => ({ ...state, preventExternalClose: submitting }));
@@ -41,7 +52,7 @@ const DisableTOTPDialog = () => {
         <form id={'disable-totp-form'} className={'mt-6'} onSubmit={submit}>
             <FlashMessageRender byKey={'account:two-step'} className={'-mt-2 mb-6'} />
             <label className={'block pb-1'} htmlFor={'totp-password'}>
-                Password
+                {t('common:password')}
             </label>
             <Input.Text
                 id={'totp-password'}
@@ -51,14 +62,14 @@ const DisableTOTPDialog = () => {
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.currentTarget.value)}
             />
             <Dialog.Footer>
-                <Button.Text onClick={close}>Cancel</Button.Text>
+                <Button.Text onClick={close}>{t('common:cancel')}</Button.Text>
                 <Tooltip
                     delay={100}
                     disabled={password.length > 0}
-                    content={'You must enter your account password to continue.'}
+                    content={t('two_factor.disable_dialog.password_required')}
                 >
                     <Button.Danger type={'submit'} form={'disable-totp-form'} disabled={submitting || !password.length}>
-                        Disable
+                        {t('two_factor.disable_dialog.submit')}
                     </Button.Danger>
                 </Tooltip>
             </Dialog.Footer>
@@ -66,7 +77,4 @@ const DisableTOTPDialog = () => {
     );
 };
 
-export default asDialog({
-    title: 'Disable Two-Step Verification',
-    description: 'Disabling two-step verification will make your account less secure.',
-})(DisableTOTPDialog);
+export default asDialog()(DisableTOTPDialog);

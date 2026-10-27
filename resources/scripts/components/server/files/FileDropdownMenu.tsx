@@ -1,4 +1,5 @@
 import React, { memo, useRef, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faBoxOpen,
@@ -55,6 +56,7 @@ const Row = ({ icon, title, ...props }: RowProps) => (
 );
 
 const FileDropdownMenu = ({ file }: { file: FileObject }) => {
+    const { t } = useTranslation('files');
     const onClickRef = useRef<DropdownMenu>(null);
     const [showSpinner, setShowSpinner] = useState(false);
     const [modal, setModal] = useState<ModalType | null>(null);
@@ -132,12 +134,16 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
             <Dialog.Confirm
                 open={showConfirmation}
                 onClose={() => setShowConfirmation(false)}
-                title={`Delete ${file.isFile ? 'File' : 'Directory'}`}
-                confirm={'Delete'}
+                title={t(file.isFile ? 'delete.file_title' : 'delete.directory_title')}
+                confirm={t('common:delete')}
                 onConfirmed={doDeletion}
             >
-                You will not be able to recover the contents of&nbsp;
-                <span className={'font-semibold text-gray-50'}>{file.name}</span> once deleted.
+                <Trans
+                    t={t}
+                    i18nKey={'delete.message'}
+                    values={{ name: file.name }}
+                    components={{ strong: <span className={'font-semibold text-gray-50'} /> }}
+                />
             </Dialog.Confirm>
             <DropdownMenu
                 ref={onClickRef}
@@ -167,27 +173,32 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                 )}
             >
                 <Can action={'file.update'}>
-                    <Row onClick={() => setModal('rename')} icon={faPencilAlt} title={'Rename'} />
-                    <Row onClick={() => setModal('move')} icon={faLevelUpAlt} title={'Move'} />
-                    <Row onClick={() => setModal('chmod')} icon={faFileCode} title={'Permissions'} />
+                    <Row onClick={() => setModal('rename')} icon={faPencilAlt} title={t('actions.rename')} />
+                    <Row onClick={() => setModal('move')} icon={faLevelUpAlt} title={t('actions.move')} />
+                    <Row onClick={() => setModal('chmod')} icon={faFileCode} title={t('actions.permissions')} />
                 </Can>
                 {file.isFile && (
                     <Can action={'file.create'}>
-                        <Row onClick={doCopy} icon={faCopy} title={'Copy'} />
+                        <Row onClick={doCopy} icon={faCopy} title={t('common:copy')} />
                     </Can>
                 )}
                 {file.isArchiveType() ? (
                     <Can action={'file.create'}>
-                        <Row onClick={doUnarchive} icon={faBoxOpen} title={'Unarchive'} />
+                        <Row onClick={doUnarchive} icon={faBoxOpen} title={t('actions.unarchive')} />
                     </Can>
                 ) : (
                     <Can action={'file.archive'}>
-                        <Row onClick={doArchive} icon={faFileArchive} title={'Archive'} />
+                        <Row onClick={doArchive} icon={faFileArchive} title={t('actions.archive')} />
                     </Can>
                 )}
-                {file.isFile && <Row onClick={doDownload} icon={faFileDownload} title={'Download'} />}
+                {file.isFile && <Row onClick={doDownload} icon={faFileDownload} title={t('common:download')} />}
                 <Can action={'file.delete'}>
-                    <Row onClick={() => setShowConfirmation(true)} icon={faTrashAlt} title={'Delete'} $danger />
+                    <Row
+                        onClick={() => setShowConfirmation(true)}
+                        icon={faTrashAlt}
+                        title={t('common:delete')}
+                        $danger
+                    />
                 </Can>
             </DropdownMenu>
         </>
