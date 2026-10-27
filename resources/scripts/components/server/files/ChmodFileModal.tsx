@@ -1,6 +1,7 @@
 import { fileBitsToString } from '@/helpers';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import Modal, { RequiredModalProps } from '@/components/elements/Modal';
 import { Form, Formik, FormikHelpers } from 'formik';
 import Field from '@/components/elements/Field';
@@ -22,6 +23,7 @@ interface File {
 type OwnProps = RequiredModalProps & { files: File[] };
 
 const ChmodFileModal = ({ files, ...props }: OwnProps) => {
+    const { t } = useTranslation('files');
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const { mutate } = useFileManagerSwr();
     const { clearFlashes, clearAndAddHttpError } = useFlash();
@@ -59,10 +61,10 @@ const ChmodFileModal = ({ files, ...props }: OwnProps) => {
                     <Form css={tw`m-0`}>
                         <div css={tw`flex flex-wrap items-end`}>
                             <div css={tw`w-full sm:flex-1 sm:mr-4`}>
-                                <Field type={'string'} id={'file_mode'} name={'mode'} label={'File Mode'} autoFocus />
+                                <Field type={'string'} id={'file_mode'} name={'mode'} label={t('chmod.label')} autoFocus />
                             </div>
                             <div css={tw`w-full sm:w-auto mt-4 sm:mt-0`}>
-                                <Button css={tw`w-full`}>Update</Button>
+                                <Button css={tw`w-full`}>{t('chmod.submit')}</Button>
                             </div>
                         </div>
                     </Form>
