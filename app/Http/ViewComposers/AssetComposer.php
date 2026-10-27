@@ -4,10 +4,13 @@ namespace Pterodactyl\Http\ViewComposers;
 
 use Illuminate\View\View;
 use Pterodactyl\Services\Helpers\AssetHashService;
+use Pterodactyl\Traits\Helpers\AvailableLanguages;
 use Pterodactyl\Services\Databases\Backups\DatabaseBackupStorage;
 
 class AssetComposer
 {
+    use AvailableLanguages;
+
     /**
      * AssetComposer constructor.
      */
@@ -31,6 +34,7 @@ class AssetComposer
                 'siteKey' => config('recaptcha.website_key') ?? '',
             ],
             'databaseBackups' => $this->databaseBackups->isEnabled(),
+            'languages' => $this->getAvailableLanguages(true),
         ]);
     }
 }

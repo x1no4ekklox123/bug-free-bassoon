@@ -2,18 +2,56 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import I18NextHttpBackend, { HttpBackendOptions } from 'i18next-http-backend';
 import I18NextMultiloadBackendAdapter from 'i18next-multiload-backend-adapter';
+import { Locale } from 'date-fns';
+import enUS from 'date-fns/locale/en-US';
+import ru from 'date-fns/locale/ru';
+
+// Every namespace maps to resources/lang/{locale}/{namespace}.php. All of them are loaded in
+// a single request before the application renders, so components never suspend on them.
+export const NAMESPACES = [
+    'common',
+    'navigation',
+    'authentication',
+    'dashboard',
+    'account',
+    'activity',
+    'activitylog',
+    'overview',
+    'files',
+    'databases',
+    'backups',
+    'schedules',
+    'users',
+    'network',
+    'startup',
+    'settings',
+    'features',
+] as const;
+
+const DATE_LOCALES: Record<string, Locale> = { en: enUS, ru };
+
+interface ExtendedWindow extends Window {
+    PterodactylUser?: { language?: string };
+    SiteConfiguration?: { locale?: string };
+}
+
+const { PterodactylUser, SiteConfiguration } = window as ExtendedWindow;
 
 // If we're using HMR use a unique hash per page reload so that we're always
 // doing cache busting. Otherwise just use the builder provided hash value in
 // the URL to allow cache busting to occur whenever the front-end is rebuilt.
 const hash = module.hot ? Date.now().toString(16) : process.env.WEBPACK_BUILD_HASH;
 
-i18n.use(I18NextMultiloadBackendAdapter)
+export const i18nReady = i18n
+    .use(I18NextMultiloadBackendAdapter)
     .use(initReactI18next)
     .init({
         debug: process.env.DEBUG === 'true',
-        lng: 'en',
+        lng: PterodactylUser?.language || SiteConfiguration?.locale || 'en',
         fallbackLng: 'en',
+        load: 'languageOnly',
+        ns: [...NAMESPACES],
+        defaultNS: 'common',
         keySeparator: '.',
         backend: {
             backend: I18NextHttpBackend,
@@ -29,5 +67,15 @@ i18n.use(I18NextMultiloadBackendAdapter)
             escapeValue: false,
         },
     });
+
+i18n.on('languageChanged', (language) => {
+    document.documentElement.setAttribute('lang', language);
+});
+
+/**
+ * Returns the date-fns locale for the active language, pass it to every date-fns
+ * formatting call that produces words (formatDistanceToNow, format with month names...).
+ */
+export const dateLocale = (): Locale => DATE_LOCALES[i18n.resolvedLanguage || i18n.language] || enUS;
 
 export default i18n;

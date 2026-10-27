@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Transformers\Api\Client\AccountTransformer;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdateEmailRequest;
+use Pterodactyl\Http\Requests\Api\Client\Account\UpdateLanguageRequest;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdatePasswordRequest;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
@@ -69,6 +70,27 @@ class AccountController extends ClientApiController
      *
      * @throws \Throwable
      */
+    /**
+     * Updates the language used for the user's interface.
+     *
+     * @throws \Throwable
+     */
+    public function updateLanguage(UpdateLanguageRequest $request): JsonResponse
+    {
+        $user = $request->user();
+        $original = $user->language;
+
+        if ($original !== $request->validated('language')) {
+            $this->updateService->handle($user, ['language' => $request->validated('language')]);
+
+            Activity::event('user:account.language-changed')
+                ->property(['old' => $original, 'new' => $request->validated('language')])
+                ->log();
+        }
+
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+    }
+
     public function updatePassword(UpdatePasswordRequest $request): JsonResponse
     {
         $user = Activity::event('user:account.password-changed')->transaction(function () use ($request) {

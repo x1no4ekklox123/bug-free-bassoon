@@ -8,6 +8,8 @@ export interface SiteSettings {
         siteKey: string;
     };
     databaseBackups?: boolean;
+    // Language code => native language name, e.g. { en: 'English', ru: 'Русский' }.
+    languages?: Record<string, string>;
 }
 
 export interface SettingsStore {
