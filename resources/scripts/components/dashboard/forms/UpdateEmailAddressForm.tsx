@@ -8,6 +8,8 @@ import { httpErrorToHuman } from '@/api/http';
 import { ApplicationStore } from '@/state';
 import tw from 'twin.macro';
 import { Button } from '@/components/elements/button/index';
+import { useTranslation } from 'react-i18next';
+import i18n from '@/i18n';
 
 interface Values {
     email: string;
@@ -15,11 +17,14 @@ interface Values {
 }
 
 const schema = Yup.object().shape({
-    email: Yup.string().email().required(),
-    password: Yup.string().required('You must provide your current account password.'),
+    email: Yup.string()
+        .email(() => i18n.t('account:email.validation.email'))
+        .required(() => i18n.t('account:email.validation.email_required')),
+    password: Yup.string().required(() => i18n.t('account:email.validation.password_required')),
 });
 
 export default () => {
+    const { t } = useTranslation('account');
     const user = useStoreState((state: State<ApplicationStore>) => state.user.data);
     const updateEmail = useStoreActions((state: Actions<ApplicationStore>) => state.user.updateUserEmail);
 
@@ -33,14 +38,14 @@ export default () => {
                 addFlash({
                     type: 'success',
                     key: 'account:email',
-                    message: 'Your primary email has been updated.',
+                    message: t('email.updated'),
                 })
             )
             .catch((error) =>
                 addFlash({
                     type: 'error',
                     key: 'account:email',
-                    title: 'Error',
+                    title: t('common:error'),
                     message: httpErrorToHuman(error),
                 })
             )
@@ -56,17 +61,17 @@ export default () => {
                 <React.Fragment>
                     <SpinnerOverlay size={'large'} visible={isSubmitting} />
                     <Form css={tw`m-0`}>
-                        <Field id={'current_email'} type={'email'} name={'email'} label={'Email'} />
+                        <Field id={'current_email'} type={'email'} name={'email'} label={t('email.email')} />
                         <div css={tw`mt-6`}>
                             <Field
                                 id={'confirm_password'}
                                 type={'password'}
                                 name={'password'}
-                                label={'Confirm Password'}
+                                label={t('email.confirm_password')}
                             />
                         </div>
                         <div css={tw`mt-6`}>
-                            <Button disabled={isSubmitting || !isValid}>Update Email</Button>
+                            <Button disabled={isSubmitting || !isValid}>{t('email.submit')}</Button>
                         </div>
                     </Form>
                 </React.Fragment>
