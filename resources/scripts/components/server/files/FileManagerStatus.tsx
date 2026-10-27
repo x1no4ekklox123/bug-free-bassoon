@@ -1,8 +1,8 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ServerContext } from '@/state/server';
 import { CloudUploadIcon, XIcon } from '@heroicons/react/solid';
-import asDialog from '@/hoc/asDialog';
-import { Dialog, DialogWrapperContext } from '@/components/elements/dialog';
+import { Dialog, DialogProps } from '@/components/elements/dialog';
 import { Button } from '@/components/elements/button/index';
 import Tooltip from '@/components/elements/tooltip/Tooltip';
 import Code from '@/components/elements/Code';
@@ -30,8 +30,8 @@ const Spinner = ({ progress, className }: { progress: number; className?: string
     </svg>
 );
 
-const FileUploadList = () => {
-    const { close } = useContext(DialogWrapperContext);
+const FileUploadList = ({ close }: { close: () => void }) => {
+    const { t } = useTranslation('files');
     const cancelFileUpload = ServerContext.useStoreActions((actions) => actions.files.cancelFileUpload);
     const clearFileUploads = ServerContext.useStoreActions((actions) => actions.files.clearFileUploads);
     const uploads = ServerContext.useStoreState((state) =>
@@ -61,20 +61,27 @@ const FileUploadList = () => {
             ))}
             <Dialog.Footer>
                 <Button.Danger variant={Button.Variants.Secondary} onClick={() => clearFileUploads()}>
-                    Cancel Uploads
+                    {t('uploads.cancel')}
                 </Button.Danger>
-                <Button.Text onClick={close}>Close</Button.Text>
+                <Button.Text onClick={close}>{t('common:close')}</Button.Text>
             </Dialog.Footer>
         </div>
     );
 };
 
-const FileUploadListDialog = asDialog({
-    title: 'File Uploads',
-    description: 'The following files are being uploaded to your server.',
-})(FileUploadList);
+// Not built with asDialog: its title is fixed when the module loads, before the language is known.
+const FileUploadListDialog = ({ open, onClose }: DialogProps) => {
+    const { t } = useTranslation('files');
+
+    return (
+        <Dialog open={open} onClose={onClose} title={t('uploads.title')} description={t('uploads.description')}>
+            <FileUploadList close={onClose} />
+        </Dialog>
+    );
+};
 
 export default () => {
+    const { t } = useTranslation('files');
     const open = useSignal(false);
 
     const count = ServerContext.useStoreState((state) => Object.keys(state.files.uploads).length);
@@ -92,7 +99,7 @@ export default () => {
     return (
         <>
             {count > 0 && (
-                <Tooltip content={`${count} files are uploading, click to view`}>
+                <Tooltip content={t('uploads.in_progress', { count })}>
                     <button
                         className={'flex items-center justify-center w-10 h-10'}
                         onClick={() => (open.value = true)}
