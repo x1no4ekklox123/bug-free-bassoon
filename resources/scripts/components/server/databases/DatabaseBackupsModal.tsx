@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 import tw from 'twin.macro';
 import { format, formatDistanceToNow } from 'date-fns';
@@ -29,6 +30,7 @@ import {
     getDatabaseBackups,
     restoreDatabaseBackup,
 } from '@/api/server/databases/backups';
+import i18n, { dateLocale } from '@/i18n';
 
 interface Props {
     database: ServerDatabase;
@@ -55,18 +57,21 @@ const StatusIcon = ({ backup }: { backup: DatabaseBackup }) => {
 };
 
 const describe = (backup: DatabaseBackup): string => {
-    if (backup.status === 'pending') return 'Creating backup…';
-    if (backup.restoreStatus === 'restoring') return 'Restoring…';
-    if (backup.status === 'failed') return 'Backup failed';
-    if (backup.restoreStatus === 'failed') return 'Last restore failed';
+    if (backup.status === 'pending') return i18n.t('databases:backups.status.creating');
+    if (backup.restoreStatus === 'restoring') return i18n.t('databases:backups.status.restoring');
+    if (backup.status === 'failed') return i18n.t('databases:backups.status.failed');
+    if (backup.restoreStatus === 'failed') return i18n.t('databases:backups.status.restore_failed');
     if (backup.restoreStatus === 'completed' && backup.restoredAt) {
-        return `Restored ${formatDistanceToNow(backup.restoredAt, { addSuffix: true })}`;
+        return i18n.t('databases:backups.status.restored', {
+            time: formatDistanceToNow(backup.restoredAt, { addSuffix: true, locale: dateLocale() }),
+        });
     }
 
     return bytesToString(backup.bytes);
 };
 
 export default ({ database, visible, onDismissed }: Props) => {
+    const { t } = useTranslation('databases');
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const { addError, clearFlashes } = useFlash();
     const [name, setName] = useState('');
@@ -146,11 +151,11 @@ export default ({ database, visible, onDismissed }: Props) => {
         >
             <div css={tw`flex items-center mb-1`}>
                 <FontAwesomeIcon icon={faHistory} css={tw`text-primary-400 mr-3`} fixedWidth />
-                <h3 css={tw`text-2xl break-all`}>Backups of {database.name}</h3>
+                <h3 css={tw`text-2xl break-all`}>{t('backups.title', { name: database.name })}</h3>
             </div>
             <p css={tw`text-sm text-neutral-400 mb-6`}>
-                Backups are compressed SQL dumps stored in S3.
-                {data && data.limit > 0 && ` ${used} of ${data.limit} backups used.`}
+                {t('backups.description')}
+                {data && data.limit > 0 && ` ${t('backups.usage', { used, limit: data.limit })}`}
             </p>
             <FlashMessageRender byKey={FLASH_KEY} css={tw`mb-4`} />
             {error && !data ? (
@@ -159,11 +164,7 @@ export default ({ database, visible, onDismissed }: Props) => {
                 <Spinner size={'large'} centered />
             ) : (
                 <>
-                    {!data.enabled && (
-                        <p css={tw`mb-4 text-sm text-yellow-300`}>
-                            Database backups are currently disabled by the administrator.
-                        </p>
-                    )}
+                    {!data.enabled && <p css={tw`mb-4 text-sm text-yellow-300`}>{t('backups.disabled')}</p>}
                     <Can action={'database.backup'}>
                         <form
                             css={tw`flex flex-col sm:flex-row mb-6`}
@@ -176,7 +177,7 @@ export default ({ database, visible, onDismissed }: Props) => {
                                 type={'text'}
                                 value={name}
                                 maxLength={191}
-                                placeholder={'Backup name (optional)'}
+                                placeholder={t('backups.name_placeholder')}
                                 onChange={(e) => setName(e.currentTarget.value)}
                                 disabled={!data.enabled}
                             />
@@ -185,19 +186,15 @@ export default ({ database, visible, onDismissed }: Props) => {
                                 css={tw`mt-3 sm:mt-0 sm:ml-3 flex-shrink-0`}
                                 disabled={!data.enabled || busy || limitReached || submitting}
                             >
-                                Create Backup
+                                {t('backups.create')}
                             </Button>
                         </form>
                         {limitReached && (
-                            <p css={tw`-mt-4 mb-6 text-xs text-neutral-400`}>
-                                The backup limit for this database has been reached, delete an older backup first.
-                            </p>
+                            <p css={tw`-mt-4 mb-6 text-xs text-neutral-400`}>{t('backups.limit_reached')}</p>
                         )}
                     </Can>
                     {backups.length === 0 ? (
-                        <p css={tw`text-center text-sm text-neutral-400 py-6`}>
-                            There are no backups for this database yet.
-                        </p>
+                        <p css={tw`text-center text-sm text-neutral-400 py-6`}>{t('backups.empty')}</p>
                     ) : (
                         <div css={tw`space-y-2`}>
                             {backups.map((backup) => (
@@ -211,8 +208,15 @@ export default ({ database, visible, onDismissed }: Props) => {
                                                 {backup.name}
                                             </p>
                                             <p css={tw`text-xs text-neutral-400 mt-1`}>
-                                                <span title={format(backup.createdAt, 'ddd, MMMM do, yyyy HH:mm:ss')}>
-                                                    {formatDistanceToNow(backup.createdAt, { addSuffix: true })}
+                                                <span
+                                                    title={format(backup.createdAt, t('backups.date_format'), {
+                                                        locale: dateLocale(),
+                                                    })}
+                                                >
+                                                    {formatDistanceToNow(backup.createdAt, {
+                                                        addSuffix: true,
+                                                        locale: dateLocale(),
+                                                    })}
                                                 </span>
                                                 <span css={tw`mx-2`}>&middot;</span>
                                                 {describe(backup)}
@@ -224,7 +228,7 @@ export default ({ database, visible, onDismissed }: Props) => {
                                                     <Button
                                                         size={'xsmall'}
                                                         isSecondary
-                                                        title={'Download'}
+                                                        title={t('common:download')}
                                                         disabled={!data.enabled}
                                                         onClick={() => download(backup)}
                                                     >
@@ -238,7 +242,7 @@ export default ({ database, visible, onDismissed }: Props) => {
                                                         size={'xsmall'}
                                                         isSecondary
                                                         css={tw`ml-2`}
-                                                        title={'Restore'}
+                                                        title={t('common:restore')}
                                                         disabled={!data.enabled || busy}
                                                         onClick={() => setPending({ type: 'restore', backup })}
                                                     >
@@ -252,7 +256,7 @@ export default ({ database, visible, onDismissed }: Props) => {
                                                     color={'red'}
                                                     isSecondary
                                                     css={tw`ml-2`}
-                                                    title={'Delete'}
+                                                    title={t('common:delete')}
                                                     disabled={isBusy(backup)}
                                                     onClick={() => setPending({ type: 'delete', backup })}
                                                 >
@@ -269,12 +273,12 @@ export default ({ database, visible, onDismissed }: Props) => {
                                         <div css={tw`mt-3 rounded-md bg-neutral-800 p-3`}>
                                             <p css={tw`text-sm`}>
                                                 {pending.type === 'restore'
-                                                    ? `All current data in ${database.name} will be replaced with the contents of this backup. This cannot be undone.`
-                                                    : 'This backup will be permanently deleted from storage.'}
+                                                    ? t('backups.restore_warning', { name: database.name })
+                                                    : t('backups.delete_warning')}
                                             </p>
                                             <div css={tw`mt-3 flex justify-end`}>
                                                 <Button size={'xsmall'} isSecondary onClick={() => setPending(null)}>
-                                                    Cancel
+                                                    {t('common:cancel')}
                                                 </Button>
                                                 <Button
                                                     size={'xsmall'}
@@ -283,7 +287,11 @@ export default ({ database, visible, onDismissed }: Props) => {
                                                     disabled={submitting}
                                                     onClick={confirm}
                                                 >
-                                                    {pending.type === 'restore' ? 'Restore Backup' : 'Delete Backup'}
+                                                    {t(
+                                                        pending.type === 'restore'
+                                                            ? 'backups.restore'
+                                                            : 'backups.delete'
+                                                    )}
                                                 </Button>
                                             </div>
                                         </div>
@@ -296,7 +304,7 @@ export default ({ database, visible, onDismissed }: Props) => {
             )}
             <div css={tw`mt-6 text-right`}>
                 <Button isSecondary onClick={onDismissed}>
-                    Close
+                    {t('common:close')}
                 </Button>
             </div>
         </Modal>

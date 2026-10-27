@@ -14,8 +14,11 @@ import GreyRowBox from '@/components/elements/GreyRowBox';
 import { Dialog } from '@/components/elements/dialog';
 import { useFlashKey } from '@/plugins/useFlash';
 import Code from '@/components/elements/Code';
+import { Trans, useTranslation } from 'react-i18next';
+import { dateLocale } from '@/i18n';
 
 export default () => {
+    const { t } = useTranslation('account');
     const [deleteIdentifier, setDeleteIdentifier] = useState('');
     const [keys, setKeys] = useState<ApiKey[]>([]);
     const [loading, setLoading] = useState(true);
@@ -42,26 +45,31 @@ export default () => {
     };
 
     return (
-        <PageContentBlock title={'Account API'}>
+        <PageContentBlock title={t('api.title')}>
             <FlashMessageRender byKey={'account'} />
             <div css={tw`md:flex flex-nowrap my-10`}>
-                <ContentBox title={'Create API Key'} css={tw`flex-none w-full md:w-1/2`}>
+                <ContentBox title={t('api.create_title')} css={tw`flex-none w-full md:w-1/2`}>
                     <CreateApiKeyForm onKeyCreated={(key) => setKeys((s) => [...s!, key])} />
                 </ContentBox>
-                <ContentBox title={'API Keys'} css={tw`flex-1 overflow-hidden mt-8 md:mt-0 md:ml-8`}>
+                <ContentBox title={t('api.keys_title')} css={tw`flex-1 overflow-hidden mt-8 md:mt-0 md:ml-8`}>
                     <SpinnerOverlay visible={loading} />
                     <Dialog.Confirm
-                        title={'Delete API Key'}
-                        confirm={'Delete Key'}
+                        title={t('api.delete.title')}
+                        confirm={t('api.delete.confirm')}
                         open={!!deleteIdentifier}
                         onClose={() => setDeleteIdentifier('')}
                         onConfirmed={() => doDeletion(deleteIdentifier)}
                     >
-                        All requests using the <Code>{deleteIdentifier}</Code> key will be invalidated.
+                        <Trans
+                            t={t}
+                            i18nKey={'api.delete.message'}
+                            values={{ identifier: deleteIdentifier }}
+                            components={{ code: <Code /> }}
+                        />
                     </Dialog.Confirm>
                     {keys.length === 0 ? (
                         <p css={tw`text-center text-sm`}>
-                            {loading ? 'Loading...' : 'No API keys exist for this account.'}
+                            {loading ? t('common:loading') : t('api.empty')}
                         </p>
                     ) : (
                         keys.map((key, index) => (
@@ -73,8 +81,12 @@ export default () => {
                                 <div css={tw`ml-4 flex-1 overflow-hidden`}>
                                     <p css={tw`text-sm break-words`}>{key.description}</p>
                                     <p css={tw`text-2xs text-neutral-300 uppercase`}>
-                                        Last used:&nbsp;
-                                        {key.lastUsedAt ? format(key.lastUsedAt, 'MMM do, yyyy HH:mm') : 'Never'}
+                                        {t('api.last_used')}&nbsp;
+                                        {key.lastUsedAt
+                                            ? format(key.lastUsedAt, `${t('date_format')} HH:mm`, {
+                                                  locale: dateLocale(),
+                                              })
+                                            : t('common:never')}
                                     </p>
                                 </div>
                                 <p css={tw`text-sm ml-4 hidden md:block`}>
