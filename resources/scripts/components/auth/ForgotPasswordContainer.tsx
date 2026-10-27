@@ -12,12 +12,14 @@ import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import Reaptcha from 'reaptcha';
 import useFlash from '@/plugins/useFlash';
+import { useTranslation } from 'react-i18next';
 
 interface Values {
     email: string;
 }
 
 export default () => {
+    const { t } = useTranslation('authentication');
     const ref = useRef<Reaptcha>(null);
     const [token, setToken] = useState('');
 
@@ -38,7 +40,7 @@ export default () => {
                 console.error(error);
 
                 setSubmitting(false);
-                addFlash({ type: 'error', title: 'Error', message: httpErrorToHuman(error) });
+                addFlash({ type: 'error', title: t('common:error'), message: httpErrorToHuman(error) });
             });
 
             return;
@@ -47,11 +49,11 @@ export default () => {
         requestPasswordResetEmail(email, token)
             .then((response) => {
                 resetForm();
-                addFlash({ type: 'success', title: 'Success', message: response });
+                addFlash({ type: 'success', title: t('common:success'), message: response });
             })
             .catch((error) => {
                 console.error(error);
-                addFlash({ type: 'error', title: 'Error', message: httpErrorToHuman(error) });
+                addFlash({ type: 'error', title: t('common:error'), message: httpErrorToHuman(error) });
             })
             .then(() => {
                 setToken('');
@@ -67,23 +69,21 @@ export default () => {
             initialValues={{ email: '' }}
             validationSchema={object().shape({
                 email: string()
-                    .email('A valid email address must be provided to continue.')
-                    .required('A valid email address must be provided to continue.'),
+                    .email(t('forgot_password.validation.email'))
+                    .required(t('forgot_password.validation.email')),
             })}
         >
             {({ isSubmitting, setSubmitting, submitForm }) => (
-                <LoginFormContainer title={'Request Password Reset'} css={tw`w-full flex`}>
+                <LoginFormContainer title={t('forgot_password.title')} css={tw`w-full flex`}>
                     <Field
-                        label={'Email'}
-                        description={
-                            'Enter your account email address to receive instructions on resetting your password.'
-                        }
+                        label={t('forgot_password.email')}
+                        description={t('forgot_password.email_description')}
                         name={'email'}
                         type={'email'}
                     />
                     <div css={tw`mt-6`}>
                         <Button type={'submit'} size={'xlarge'} disabled={isSubmitting} isLoading={isSubmitting}>
-                            Send Email
+                            {t('forgot_password.submit')}
                         </Button>
                     </div>
                     {recaptchaEnabled && (
@@ -106,7 +106,7 @@ export default () => {
                             to={'/auth/login'}
                             css={tw`text-xs text-neutral-400 tracking-wide uppercase no-underline hover:text-primary-300`}
                         >
-                            Return to Login
+                            {t('return_to_login')}
                         </Link>
                     </div>
                 </LoginFormContainer>
