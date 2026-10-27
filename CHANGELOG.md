@@ -11,6 +11,8 @@ Based on Pterodactyl Panel v1.15.2.
 * S3 backups for server databases: users can create, download, restore and delete backups from the Databases tab.
 * Admin -> Settings -> Database Backups to configure the S3 storage (AWS S3, MinIO, Cloudflare R2 and other S3 compatible providers) and the per-database backup limit.
 * New subuser permissions: `database.backup`, `database.backup_restore` and `database.backup_delete`.
+* Sidebar based client layout and a redesigned server overview page (status, resources, console and quick actions).
+* Russian translation of the client area, client API messages, activity log and emails; users choose their language in Account -> Language.
 
 ## v1.12.3
 ### Fixed
