@@ -52,6 +52,8 @@ export const i18nReady = i18n
         load: 'languageOnly',
         ns: [...NAMESPACES],
         defaultNS: 'common',
+        // Lets the multiload adapter batch every namespace (and the fallback) into one request.
+        maxParallelReads: 64,
         keySeparator: '.',
         backend: {
             backend: I18NextHttpBackend,
@@ -68,9 +70,10 @@ export const i18nReady = i18n
         },
     });
 
-i18n.on('languageChanged', (language) => {
-    document.documentElement.setAttribute('lang', language);
-});
+const setDocumentLanguage = (language: string) => document.documentElement.setAttribute('lang', language);
+
+i18n.on('languageChanged', setDocumentLanguage);
+i18nReady.then(() => setDocumentLanguage(i18n.resolvedLanguage || i18n.language));
 
 /**
  * Returns the date-fns locale for the active language, pass it to every date-fns
